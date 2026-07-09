@@ -9,7 +9,10 @@ const Editor = ({
   updateMessage,
   deleteMessage,
   isDarkMode,
-  setIsDarkMode
+  setIsDarkMode,
+  deviceSettings,
+  setDeviceSettings,
+  downloadScreenshot
 }) => {
   const [newMessage, setNewMessage] = useState({
     text: '',
@@ -126,6 +129,61 @@ const Editor = ({
               </div>
             )}
           </div>
+        </div>
+      </section>
+
+      {/* Device & Export Settings */}
+      <section className="space-y-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500">Dispositivo & Exportação</h2>
+        <div className="space-y-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-2">Simular Dispositivo (Moldura)</label>
+            <div className="flex gap-2">
+              {['none', 'ios', 'android'].map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setDeviceSettings({ ...deviceSettings, type })}
+                  className={`flex-1 px-2 py-1.5 rounded text-xs font-medium transition-colors ${deviceSettings.type === type ? 'bg-purple-100 text-purple-700 border-purple-200 border' : 'bg-white text-gray-600 border-gray-300 border hover:bg-gray-50'}`}
+                >
+                  {type === 'none' ? 'Nenhum' : type === 'ios' ? 'iOS' : 'Android'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {deviceSettings.type !== 'none' && (
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-gray-700">Hora</label>
+                <input
+                  type="text"
+                  value={deviceSettings.time}
+                  onChange={(e) => setDeviceSettings({...deviceSettings, time: e.target.value})}
+                  className="mt-1 block w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700">Bateria %</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={deviceSettings.battery}
+                  onChange={(e) => setDeviceSettings({...deviceSettings, battery: e.target.value})}
+                  className="mt-1 block w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 bg-white"
+                />
+              </div>
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={downloadScreenshot}
+            className="w-full mt-4 bg-purple-600 text-white font-bold py-2.5 rounded-md hover:bg-purple-700 transition-colors shadow-sm flex items-center justify-center gap-2"
+          >
+            Baixar Print Screen
+          </button>
         </div>
       </section>
 

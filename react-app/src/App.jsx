@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import html2canvas from 'html2canvas';
 import Editor from './components/Editor';
 import Preview from './components/Preview';
 
 function App() {
+  const previewRef = useRef(null);
   const [chatInfo, setChatInfo] = useState({
     isGroup: false,
     name: 'Jules',
@@ -34,6 +36,32 @@ function App() {
   ]);
 
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [deviceSettings, setDeviceSettings] = useState({
+    type: 'none', // 'ios', 'android', 'none'
+    time: '09:41',
+    battery: 100
+  });
+
+  const downloadScreenshot = async () => {
+    if (!previewRef.current) return;
+
+    try {
+      const canvas = await html2canvas(previewRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: isDarkMode ? '#0b141a' : '#e5ddd5',
+      });
+
+      const image = canvas.toDataURL('image/png', 1.0);
+      const link = document.createElement('a');
+      link.download = `fake-chat-${Date.now()}.png`;
+      link.href = image;
+      link.click();
+    } catch (error) {
+      console.error('Failed to generate screenshot:', error);
+      alert('Erro ao gerar print screen. Tente novamente.');
+    }
+  };
 
   const addMessage = (newMessage) => {
     setMessages([...messages, { ...newMessage, id: Date.now() }]);
@@ -59,14 +87,19 @@ function App() {
           deleteMessage={deleteMessage}
           isDarkMode={isDarkMode}
           setIsDarkMode={setIsDarkMode}
+          deviceSettings={deviceSettings}
+          setDeviceSettings={setDeviceSettings}
+          downloadScreenshot={downloadScreenshot}
         />
       </div>
       <div className="flex-1 flex justify-center items-center p-4 bg-gray-200 dark:bg-zinc-900 overflow-hidden h-screen">
         <div className="w-full max-w-[450px] h-full max-h-[850px] shadow-2xl rounded-2xl overflow-hidden">
           <Preview
+            previewRef={previewRef}
             chatInfo={chatInfo}
             messages={messages}
             isDarkMode={isDarkMode}
+            deviceSettings={deviceSettings}
           />
         </div>
       </div>
