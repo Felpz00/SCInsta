@@ -17,14 +17,16 @@ By leveraging the raw Win32 API rather than heavy graphical frameworks (like Qt,
 ## Features
 
 - Basic GUI matching standard Windows look and feel
-- Open audio files (`.mp3`, `.wav`)
-- Play, Pause, and Stop functions
-- Incredibly low memory and CPU overhead
+- Open individual audio files (`.mp3`, `.wav`, `.wma`)
+- **New:** Open full folders (Albums) and play through all supported audio files inside
+- **New:** Open standard `.m3u` playlist files
+- Play, Pause, Stop, Next, and Prev functions for navigating playlists
+- Extremely low memory and CPU overhead. Uses `GetShortPathName` to handle file spaces flawlessly via `mciSendString`.
 
 ## Building from source
 
 You can compile this on Linux using the MinGW-w64 cross-compiler:
 
 ```bash
-x86_64-w64-mingw32-g++ main.cpp -o LightweightPlayer.exe -mwindows -lwinmm -lcomdlg32
+x86_64-w64-mingw32-g++ main.cpp -o LightweightPlayer.exe -mwindows -lwinmm -lcomdlg32 -lole32
 ```
